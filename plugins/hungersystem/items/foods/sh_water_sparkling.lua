@@ -19,4 +19,4 @@ ITEM.height = 1
 
 ITEM.useTime = 5
 ITEM.useSound = "LiteNetwork/hl2rp/drink.ogg"
-ITEM.RestoreHunger = 10
+ITEM.RestoreThirst = 10

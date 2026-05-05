@@ -9,6 +9,7 @@ ITEM.useSound = "npc/barnacle/barnacle_crunch2.wav"
 ITEM.useName = "Consume"
 
 ITEM.RestoreHunger = 0
+ITEM.RestoreThirst = 0
 
 ITEM.functions.Consume = {
     icon = "icon16/user.png",
@@ -44,6 +45,10 @@ ITEM.functions.Consume = {
     
             if ( item.RestoreHunger > 0 ) then
                 char:SetHunger(math.Clamp(char:GetHunger() + item.RestoreHunger, 0, 100))
+            end
+
+            if ( item.RestoreThirst > 0 ) then
+                char:SetThirst(math.Clamp(char:GetThirst() + item.RestoreThirst, 0, 100))
             end
         end
 

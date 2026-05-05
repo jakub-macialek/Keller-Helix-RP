@@ -18,9 +18,21 @@ ix.config.Add("hungerTime", 120, "How many seconds between each time a player's 
     data = {min = 1, max = 600},
     category = "Hunger System"
 })
+ix.config.Add("ThirstTime", 80, "How many seconds between each time a player's needs are calculated", nil, {
+    data = {min = 1, max = 600},
+    category = "Hunger System"
+})
 
 ix.char.RegisterVar("hunger", {
     field = "hunger",
+    fieldType = ix.type.number,
+    default = 0,
+    isLocal = true,
+    bNoDisplay = true
+})
+
+ix.char.RegisterVar("thirst", {
+    field = "thirst",
     fieldType = ix.type.number,
     default = 0,
     isLocal = true,
@@ -39,6 +51,16 @@ ix.command.Add("CharSetHunger", {
     end
 })
 
+ix.command.Add("CharSetThirst", {
+    description = "Set character's thirst",
+    arguments = {ix.type.character, bit.bor(ix.type.number, ix.type.optional)},
+    adminOnly = true,
+    OnRun = function(self, client, char, level)
+        char:SetThirst(level or 0)
+        client:Notify(char:GetName() .. "'s thirst was set to " .. ( level or 0 ))
+    end
+})
+
 ix.command.Add("PlySetHunger", {
     description = "Set player's hunger",
     arguments = {ix.type.player, bit.bor(ix.type.number, ix.type.optional)},
@@ -47,6 +69,17 @@ ix.command.Add("PlySetHunger", {
         local char = target:GetCharacter()
         char:SetHunger(level or 0)
         client:Notify(target:SteamName() .. "'s hunger was set to " .. ( level or 0 ))
+    end
+})
+
+ix.command.Add("PlySetThirst", {
+    description = "Set player's thirst",
+    arguments = {ix.type.player, bit.bor(ix.type.number, ix.type.optional)},
+    adminOnly = true,
+    OnRun = function(self, client, target, level)
+        local char = target:GetCharacter()
+        char:SetThirst(level or 0)
+        client:Notify(target:SteamName() .. "'s thirst was set to " .. ( level or 0 ))
     end
 })
 
@@ -59,6 +92,15 @@ ix.command.Add("CharGetHunger", {
     end
 })
 
+ix.command.Add("CharGetThirst", {
+    description = "Get character's thirst",
+    arguments = {ix.type.character},
+    adminOnly = true,
+    OnRun = function(self, client, char)
+        client:Notify(char:GetName() .. "'s thirst is " .. char:GetThirst())
+    end
+})
+
 ix.command.Add("PlyGetHunger", {
     description = "Get player's hunger",
     arguments = {ix.type.player},
@@ -66,5 +108,15 @@ ix.command.Add("PlyGetHunger", {
     OnRun = function(self, client, target)
         local char = target:GetCharacter()
         client:Notify(target:SteamName() .. "'s hunger is " .. char:GetHunger())
+    end
+})
+
+ix.command.Add("PlyGetThirst", {
+    description = "Get player's thirst",
+    arguments = {ix.type.player},
+    adminOnly = true,
+    OnRun = function(self, client, target)
+        local char = target:GetCharacter()
+        client:Notify(target:SteamName() .. "'s thirst is " .. char:GetThirst())
     end
 })
