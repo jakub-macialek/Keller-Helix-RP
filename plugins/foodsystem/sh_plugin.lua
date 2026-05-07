@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Hunger System"
-PLUGIN.description = "Adds a Hunger System, simliar to the Apex Gamemode."
+PLUGIN.name = "Food System"
+PLUGIN.description = "Adds a Food System"
 PLUGIN.author = "Riggs"
 PLUGIN.schema = "Any"
 PLUGIN.license = [[

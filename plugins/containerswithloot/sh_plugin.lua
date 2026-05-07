@@ -14,8 +14,9 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
-ix.config.Add("populated", false, "Whether containers should be populated with loot or not.", nil, {
-    category = "Containers with Loot"
+ix.config.Add("containerLootRespawnTime", 300, "How many seconds before a container's loot respawns", nil, {
+    data = {min = 1, max = 3600},
+    category = "Containers with loot"
 })
 
 ix.util.Include("sv_hooks.lua")
