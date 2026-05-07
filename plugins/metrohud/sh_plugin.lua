@@ -1,8 +1,8 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Containers with loot"
-PLUGIN.description = "Adds containers with random loot."
+PLUGIN.name = "Metro HUD"
 PLUGIN.author = "Keller"
+PLUGIN.description = "Adds a MetroRP HUD."
 PLUGIN.schema = "Any"
 PLUGIN.license = [[
 Copyright 2026 Keller
@@ -14,8 +14,30 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
-ix.config.Add("populated", false, "Whether containers should be populated with loot or not.", nil, {
-    category = "Containers with Loot"
-})
+ix.bar.Add(function()
+    local ply = LocalPlayer()
+    local char = ply:GetCharacter()
 
-ix.util.Include("sv_hooks.lua")
+    if not char then return end
+
+    local hunger = math.Clamp(char:GetHunger() or char:GetData("hunger", 0), 0, 100)
+
+    return hunger / 100
+end, 
+Color(255, 165, 0), 
+4, 
+"hunger")
+
+ix.bar.Add(function()
+    local ply = LocalPlayer()
+    local char = ply:GetCharacter()
+
+    if not char then return end
+
+    local thirst = math.Clamp(char:GetThirst() or char:GetData("thirst", 0), 0, 100)
+
+    return thirst / 100
+end, 
+Color(0, 165, 255), 
+4, 
+"thirst")
