@@ -67,6 +67,7 @@ function PLUGIN:PlayerTick(client)
 
             client.ixHungerTick = CurTime() + ( ix.config.Get("hungerTime", 120) )
         end
+--      THIRST
         if not client.ixThirstTick or client.ixThirstTick <= CurTime() then
             if ( factionIgnore[client:Team()] ) then return false end
             if ( client:GetMoveType() == MOVETYPE_NOCLIP ) then return false end
@@ -86,7 +87,7 @@ function PLUGIN:PlayerTick(client)
             
             char:SetThirst(newThirst)
 
-            client.ixThirstTick = CurTime() + ( ix.config.Get("hungerTime", 120) )
+            client.ixThirstTick = CurTime() + ( ix.config.Get("thirstTime", 120) )
         end
     end
 end
