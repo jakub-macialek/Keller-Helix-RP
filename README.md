@@ -1,4 +1,4 @@
-# Metro Universum v0.3
+# Metro Universum v0.4
 This rp gmod gamemode is helix based
 
 Metro universum is gamemode in universum of Metro written by Dmitry Glukhovsky
@@ -12,6 +12,7 @@ This gamemode contains right now:
 - plugin hunger and thirst system with hud what needs to be configured
 - plugin crafting system what also needs to be configured
 - plugin for random loot containers
+- plugin for workshops
 - ammo
 - passports
 - skins
