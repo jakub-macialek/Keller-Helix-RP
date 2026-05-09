@@ -9,6 +9,7 @@ function ENT:SetupDataTables()
     self:NetworkVar("String", 1, "InputItem")
     self:NetworkVar("String", 2, "OutputItem")
     self:NetworkVar("Int", 3, "WorkTime")
+    self:NetworkVar("String", 4, "Description")
 end
 
 if SERVER then
@@ -24,6 +25,7 @@ if SERVER then
             self:SetInputItem(definition.input)
             self:SetOutputItem(definition.output)
             self:SetWorkTime(definition.workTime)
+            self:SetDescription(definition.description)
         end
 
         local physObj = self:GetPhysicsObject()
@@ -46,7 +48,7 @@ if SERVER then
 
         local item = inv:HasItem(inputItem)
         if not item then
-            client:Notify("You need to have " .. ix.item.list[inputItem].name .. " to make " .. ix.item.list[outputItem].name .. ".")
+            client:NotifyLocalized("wsInfo", ix.item.list[inputItem].name, ix.item.list[outputItem].name)
             return
         end
 
@@ -56,12 +58,28 @@ if SERVER then
             inv:Add(outputItem)
 
             client:SetAction()
-            client:Notify("Work completed.")
+            client:NotifyLocalized("wsYouMade", ix.item.list[outputItem].name)
         end, 
         time,
         function()
             client:SetAction()
-            client:Notify("Stopped working.")
+            client:NotifyLocalized("wsStopped", ix.item.list[outputItem].name)
         end)
     end
+else
+	ENT.PopulateEntityInfo = true
+
+	function ENT:OnPopulateEntityInfo(tooltip)
+		local definition = ix.workshop.stations[self:GetModel():lower()]
+
+		local title = tooltip:AddRow("name")
+		title:SetImportant()
+		title:SetText(self:GetDisplayName())
+		title:SetBackgroundColor(Color(255, 196, 0, 150))
+		title:SizeToContents()
+
+		local description = tooltip:AddRow("description")
+		description:SetText(definition.description)
+		description:SizeToContents()
+	end
 end

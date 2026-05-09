@@ -11,5 +11,8 @@
 -- L("serverWelcome", "John Lua") would return a string with the text "Welcome to the server, John Lua!".
 
 LANGUAGE = {
-	serverWelcome = "Welcome to the server, %s!"
+	wsInfo = "You need to have %s to make %s.",
+	wsWorking = "Working...",
+	wsYouMade = "You made %s.",
+	wsStopped = "Stopped working.",
 }
