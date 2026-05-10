@@ -6,10 +6,7 @@ ENT.bNoPersist = true
 
 function ENT:SetupDataTables()
     self:NetworkVar("String", 0, "DisplayName")
-    self:NetworkVar("String", 1, "InputItem")
-    self:NetworkVar("String", 2, "OutputItem")
-    self:NetworkVar("Int", 3, "WorkTime")
-    self:NetworkVar("String", 4, "Description")
+    self:NetworkVar("String", 1, "Description")
 end
 
 if SERVER then
@@ -22,9 +19,6 @@ if SERVER then
 
         if (definition) then
             self:SetDisplayName(definition.name)
-            self:SetInputItem(definition.input)
-            self:SetOutputItem(definition.output)
-            self:SetWorkTime(definition.workTime)
             self:SetDescription(definition.description)
         end
 
@@ -40,11 +34,17 @@ if SERVER then
         if not IsValid(client) or not client:IsPlayer() then return end
 
         local char = client:GetCharacter()
-        local inv = char:GetInventory()
+        if not char then return end
 
-        local inputItem = self:GetInputItem()
-        local outputItem = self:GetOutputItem()
-        local time = self:GetWorkTime()
+        local inv = char:GetInventory()
+        if not inv then return end
+
+        local definition = ix.workshop.stations[self:GetModel():lower()]
+        if not definition then return end
+
+        local inputItem = definition.input
+        local outputItem = definition.output
+        local time = definition.workTime or ix.config.Get("workshopDefaultWorkTime", 30)
 
         local item = inv:HasItem(inputItem)
         if not item then

@@ -1,5 +1,5 @@
 LANGUAGE = {
-	wsInfo = "Potrzebujesz mieć %s by stworzyć %s.",
+	wsInfo = "Brakuje ci %s.",
 	wsWorking = "Pracujesz...",
 	wsYouMade = "Stworzyłeś %s.",
 	wsStopped = "Wstrzymałeś pracę.",

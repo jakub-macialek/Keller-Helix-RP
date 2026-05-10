@@ -39,3 +39,12 @@ if(SERVER) then
         end
     end
 end
+
+ix.config.Add("workshopDefaultColor", Color(255, 196, 0, 150), "The default color of workshops.", nil, {
+    category = "Workshops"
+})
+
+ix.config.Add("workshopDefaultWorkTime", 30, "The default time it takes to make items in a workshop.", nil, {
+    data = {min = 1, max = 120},
+    category = "Workshops"
+})
