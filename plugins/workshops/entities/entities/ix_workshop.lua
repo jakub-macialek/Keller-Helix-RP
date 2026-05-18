@@ -43,27 +43,33 @@ if SERVER then
         if not definition then return end
 
         local inputItem = definition.input
-        local outputItem = definition.output
+        local outputItemsTable = definition.output
         local time = definition.workTime or ix.config.Get("workshopDefaultWorkTime", 30)
 
         local item = inv:HasItem(inputItem)
         if not item then
-            client:NotifyLocalized("wsInfo", ix.item.list[inputItem].name, ix.item.list[outputItem].name)
+            client:NotifyLocalized("wsInfo", ix.item.list[inputItem].name)
             return
         end
 
         client:SetAction("Working...", time)
         client:DoStaredAction(self, function()
             inv:Remove(item.id)
-            inv:Add(outputItem)
+            for _, outputItem in ipairs(outputItemsTable) do
+                for i = 1, outputItem[2] do
+                    inv:Add(outputItem[1])
+                    client:NotifyLocalized("wsYouMade", ix.item.list[outputItem[1]].name)
+                end
+            end
 
             client:SetAction()
-            client:NotifyLocalized("wsYouMade", ix.item.list[outputItem].name)
         end, 
         time,
         function()
             client:SetAction()
-            client:NotifyLocalized("wsStopped", ix.item.list[outputItem].name)
+            for _, outputItem in ipairs(outputItemsTable) do
+                client:NotifyLocalized("wsFailed", ix.item.list[outputItem[1]].name)
+            end
         end)
     end
 else

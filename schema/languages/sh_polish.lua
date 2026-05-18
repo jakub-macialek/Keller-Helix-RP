@@ -2,5 +2,5 @@ LANGUAGE = {
 	wsInfo = "Brakuje ci %s.",
 	wsWorking = "Pracujesz...",
 	wsYouMade = "Stworzyłeś %s.",
-	wsStopped = "Wstrzymałeś pracę.",
+	wsFailed = "Nie udało się stworzyć przedmiotu.",
 }

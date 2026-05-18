@@ -61,7 +61,8 @@ function PLUGIN:PlayerTick(client)
                 return false
             end
 
-            local newHunger = math.Clamp(char:GetHunger() - 1, 0, 100)
+            local hungerDecrease = ix.config.Get("hungerDecrease", 1)
+            local newHunger = math.Clamp(char:GetHunger() - hungerDecrease, 0, 100)
             
             char:SetHunger(newHunger)
 
@@ -83,7 +84,8 @@ function PLUGIN:PlayerTick(client)
                 return false
             end
 
-            local newThirst = math.Clamp(char:GetThirst() - 1, 0, 100)
+            local thirstDecrease = ix.config.Get("thirstDecrease", 1)
+            local newThirst = math.Clamp(char:GetThirst() - thirstDecrease, 0, 100)
             
             char:SetThirst(newThirst)
 

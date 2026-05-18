@@ -14,5 +14,5 @@ LANGUAGE = {
 	wsInfo = "You don't have %s.",
 	wsWorking = "Working...",
 	wsYouMade = "You made %s.",
-	wsStopped = "Stopped working.",
+	wsFailed = "Failed to make item.",
 }
