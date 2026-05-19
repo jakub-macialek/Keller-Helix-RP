@@ -15,7 +15,9 @@ ix.workshop.Register(model,
 
 ix.workshop.Register("models/props_interiors/vendingmachinesoda01a.mdl", {
 	name = "Tea maker",
-	input = "water",
+	input = {
+		{"water", 1},
+	},
 	output = {
 		{"tea", 2},
 	},

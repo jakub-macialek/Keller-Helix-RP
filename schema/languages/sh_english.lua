@@ -15,4 +15,5 @@ LANGUAGE = {
 	wsWorking = "Working...",
 	wsYouMade = "You made %s.",
 	wsFailed = "Failed to make item.",
+	wsInventoryFull = "Your inventory was full, so %s was spawned on the ground."
 }

@@ -42,23 +42,53 @@ if SERVER then
         local definition = ix.workshop.stations[self:GetModel():lower()]
         if not definition then return end
 
-        local inputItem = definition.input
+        -- Getting input and output tables from the definition for easier access
+        local inputItemsTable = definition.input
         local outputItemsTable = definition.output
-        local time = definition.workTime or ix.config.Get("workshopDefaultWorkTime", 30)
 
-        local item = inv:HasItem(inputItem)
-        if not item then
-            client:NotifyLocalized("wsInfo", ix.item.list[inputItem].name)
-            return
+        if not inputItemsTable or not outputItemsTable then return end
+
+        -- Check if the player has all required input items
+        for _, inputItem in ipairs(inputItemsTable) do
+            if (inv:GetItemCount(inputItem[1], false) < inputItem[2]) then
+                client:NotifyLocalized("wsInfo", ix.item.list[inputItem[1]].name)
+                return
+            end
         end
+
+        local time = definition.workTime or ix.config.Get("workshopDefaultWorkTime", 30)
 
         client:SetAction("Working...", time)
         client:DoStaredAction(self, function()
-            inv:Remove(item.id)
+            -- Double check if the player still has the required items after the work time
+            for _, inputItem in ipairs(inputItemsTable) do
+                if (inv:GetItemCount(inputItem[1], false) < inputItem[2]) then
+                    client:NotifyLocalized("wsInfo", ix.item.list[inputItem[1]].name)
+                    return
+                end
+            end
+            -- Remove input items
+            for _, inputItem in ipairs(inputItemsTable) do
+                for i = 1, inputItem[2] do
+                    local item = inv:HasItem(inputItem[1])
+                    if item then                        
+                        inv:Remove(item.id)
+                    end
+                end
+            end
+            -- Add output items
             for _, outputItem in ipairs(outputItemsTable) do
                 for i = 1, outputItem[2] do
-                    inv:Add(outputItem[1])
-                    client:NotifyLocalized("wsYouMade", ix.item.list[outputItem[1]].name)
+                    local item = ix.item.Get(outputItem[1])
+
+                    if (inv:FindEmptySlot(item.width, item.height, false)) then
+                        inv:Add(outputItem[1])
+                        client:NotifyLocalized("wsYouMade", ix.item.list[outputItem[1]].name)
+                    else 
+                        local spawnPos = client:GetPos() + Vector(0, 0, 50) + client:GetForward() * 5
+                        ix.item.Spawn(outputItem[1], spawnPos, nil, Angle(0, 0, 0), nil)
+                        client:NotifyLocalized("wsInventoryFull", ix.item.list[outputItem[1]].name)
+                    end
                 end
             end
 

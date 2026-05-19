@@ -20,31 +20,27 @@ ix.config.Add("hungerTime", 120, "How many seconds between each time a player's 
     category = "Food System"
 })
 ix.config.Add("hungerDecrease", 1.0, "How much hunger decreases per interval", nil, {
-    data = {min = 0, max = 100},
-    type = "decimal",
+    data = {min = 0, max = 100.0, decimals = 1},
     category = "Food System"
 })
 /*
 ix.config.Add("hungerSprintMultiplierDecrease", 1.3, "How much hunger decreases when sprinting", nil, {
-    data = {min = 0, max = 100},
-    type = "decimal",
+    data = {min = 0, max = 3.0, decimals = 1},
     category = "Food System"
 })
 */
 -- THIRST
 ix.config.Add("thirstTime", 80, "How many seconds between each time a player's needs are calculated", nil, {
     data = {min = 1, max = 600},
-    category = "Food System"
+    category = "Food System",
 })
 ix.config.Add("thirstDecrease", 1.0, "How much thirst decreases per interval", nil, {
-    data = {min = 0, max = 100},
-    type = "decimal",
+    data = {min = 0, max = 100.0, decimals = 1},
     category = "Food System"
 })
 /*
 ix.config.Add("thirstSprintMultiplierDecrease", 1.3, "How much thirst decreases when sprinting", nil, {
-    data = {min = 0, max = 100},
-    type = "decimal",
+    data = {min = 0, max = 3.0, decimals = 1},
     category = "Food System"
 })
 */

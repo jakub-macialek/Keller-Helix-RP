@@ -13,7 +13,7 @@ ix.config.Add("containerSave", true, "Whether or not containers will save after 
 })
 
 ix.config.Add("containerOpenTime", 0.7, "How long it takes to open a container.", nil, {
-	data = {min = 0, max = 50},
+	data = {min = 0, max = 50.0, decimals = 1},
 	category = "Containers"
 })
 

@@ -1,4 +1,4 @@
-# Metro Universum v0.4.3a
+# Metro Universum v0.4.3b
 ## About
 Helix-based RP gamemode for Garry's Mod, inspired by the Metro trilogy by Dmitry Glukhovsky.
 Currently in alpha. A more complete experience is planned for v0.5 or v0.6.
@@ -12,20 +12,13 @@ Configuration is done manually through config files. If you don't know what you'
 ---
 
 ## Plugins:
-- containers
->> Modified to include two additional hooks: `ContainerOpened` and `ContainerClosed`. Required by containerswithloot.
-- containerswithloot
->> Allows you to define item pools that spawn inside specific containers, e.g. scrap in trash cans.
-- crafting
->> Third-party plugin, included as-is.
-- foodsystem
->> Extended with a hunger rework, thirst mechanic, and additional commands (disabled by default, uncomment to enable).
-- itemspawner
->> Third-party plugin, included as-is.
-- workshops
->> Custom plugin. Configure workstations where players exchange one item for another. Multi-input crafting planned for the future.
-- metrohud
->> Adds hunger and thirst bars to the Helix HUD.
+* containers - Modified to include two additional hooks: `ContainerOpened` and `ContainerClosed`. Required by containerswithloot.
+* containerswithloot - Allows you to define item pools that spawn inside specific containers, e.g. scrap in trash cans.
+* crafting - Third-party plugin, included as-is.
+* foodsystem - Extended with a hunger rework, thirst mechanic, and additional commands (disabled by default, uncomment to enable).
+* itemspawner - Third-party plugin, included as-is.
+* workshops - Custom plugin. Configure workstations where players exchange items for another.
+* metrohud - Adds hunger and thirst bars to the Helix HUD.
 
 ---
 
