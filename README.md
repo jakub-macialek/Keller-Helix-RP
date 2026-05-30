@@ -24,6 +24,6 @@ Configuration is done manually through config files. If you don't know what you'
 
 ## Roadmap
 Development is slow and there's a chance this never reaches v1.0. Planned features if it does:
-1. Radiation system(with this mask, uniform)
-2. Diseases(Diarrhea, Food poisoning)
+1. Radiation system(mask, uniform)
+2. Diseases(diarrhea, food poisoning)
 3. Crafting skills
