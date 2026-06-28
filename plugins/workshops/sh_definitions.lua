@@ -22,7 +22,7 @@ ix.workshop.Register(model,
 ]]
 
 ix.workshop.Register("models/props_interiors/vendingmachinesoda01a.mdl", {
-	name = "Tea maker",
+	name = "tea_maker",
 	input = {
 		{"water", 1},
 	},
@@ -30,5 +30,19 @@ ix.workshop.Register("models/props_interiors/vendingmachinesoda01a.mdl", {
 		{"tea", 2},
 	},
     workTime = 30,
-	description = "A machine that makes tea. It requires water to work.",
+	description = "tea_maker_desc",
+	type = WorkshopType.ACTION,
+})
+
+ix.workshop.Register("models/props_c17/canister_propane01a.mdl", {
+	name = "tea_maker_2",
+	input = {
+		{"water", 1},
+	},
+	output = {
+		{"tea", 2},
+	},
+    workTime = 30,
+	description = "tea_maker_2_desc",
+	type = WorkshopType.TOGGLE,
 })

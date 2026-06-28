@@ -1,15 +1,41 @@
+-- sh_init.lua / cl_init.lua / sv_init.lua (W zależności od struktury, poniżej podział na SERVER i CLIENT)
+
 ENT.Type = "anim"
 ENT.PrintName = "Workshop"
 ENT.Category = "Helix"
 ENT.Spawnable = false
 ENT.bNoPersist = true
 
+-- Konfiguracja domyślnych typów, jeśli nie są zdefiniowane globalnie
+WorkshopType = WorkshopType or {
+    ACTION = 1,
+    TOGGLE = 2
+}
+
 function ENT:SetupDataTables()
     self:NetworkVar("String", 0, "DisplayName")
     self:NetworkVar("String", 1, "Description")
+    self:NetworkVar("Float", 0, "EndTime")
+    self:NetworkVar("Bool", 0, "IsWorking")
+    self:NetworkVar("Bool", 1, "HasItems")
 end
 
 if SERVER then
+    function ENT:Think()
+        if self:GetIsWorking() then
+            local endTime = self:GetEndTime()
+
+            if CurTime() >= endTime then
+                self:SetIsWorking(false)
+                self:SetEndTime(0)
+                self:SetHasItems(true)
+            end
+        end
+
+        self:NextThink(CurTime() + 0.5) 
+        return true
+    end
+
     local function CheckInventoryForItems(inv, items, client)
         if not inv then return false end
 
@@ -111,7 +137,9 @@ if SERVER then
         end
     end
 
-    local function StartHoldWork(client, time, inputItemsTable, outputItemsTable, workshop)
+    local function StartActionWork(client, time, inputItemsTable, outputItemsTable, workshop)
+        if not IsValid(client) then return end
+
         client:SetAction("Working...", time)
         client:DoStaredAction(workshop, function()
             local char = client:GetCharacter()
@@ -152,6 +180,28 @@ if SERVER then
         end)
     end
 
+    local function StartToggleWork(client, time, inputItemsTable, outputItemsTable, workshop)
+        if not IsValid(client) or not client:IsPlayer() then return end
+        if not inputItemsTable then return end
+        if not outputItemsTable then return end
+        if not workshop then return end
+
+        local char = client:GetCharacter()
+        if not char then return end
+
+        local inv = char:GetInventory()
+        if not inv then return end
+
+        if not CheckInventoryForItems(inv, inputItemsTable, client) then return end
+        if not RemoveItemsFromInventory(inv, inputItemsTable) then return end
+
+        local endTime = CurTime() + time
+
+        workshop:SetHasItems(false)
+        workshop:SetEndTime(endTime)
+        workshop:SetIsWorking(true)
+    end
+
     function ENT:Use(client)
         if not IsValid(client) or not client:IsPlayer() then return end
 
@@ -167,16 +217,48 @@ if SERVER then
         local definition = ix.workshop.stations[model:lower()]
         if not definition then return end
 
+        if self:GetIsWorking() then
+            client:NotifyLocalized("wsBusy")
+            return
+        end
+
+        local outputItemsTable = definition.output
+        if not outputItemsTable then return end
+
+        if self:GetHasItems() then
+            local outputNames = {}
+            for _, v in ipairs(outputItemsTable) do
+                local itemTable = ix.item.Get(v[1])
+                if itemTable then
+                    table.insert(outputNames, itemTable.name or v[1])
+                end
+            end
+            local outputString = table.concat(outputNames, ", ")
+
+            local result, failedItemName = AddItemsToInventory(inv, outputItemsTable, client)
+            if result then
+                client:NotifyLocalized("wsYouMade", outputString)
+                self:SetHasItems(false)
+                self:SetDescription(definition.description or "")
+            else
+                client:NotifyLocalized("wsInventoryFull", failedItemName or "items")
+            end
+
+            return
+        end
+
         local inputItemsTable = definition.input
         if not inputItemsTable then return end
 
         if not CheckInventoryForItems(inv, inputItemsTable, client) then return end
 
         local time = definition.workTime or ix.config.Get("workshopDefaultWorkTime", 30)
-        local outputItemsTable = definition.output
-        if not outputItemsTable then return end
 
-        StartHoldWork(client, time, inputItemsTable, outputItemsTable, self)
+        if definition.type == WorkshopType.ACTION then
+            StartActionWork(client, time, inputItemsTable, outputItemsTable, self)
+        elseif definition.type == WorkshopType.TOGGLE then
+           StartToggleWork(client, time, inputItemsTable, outputItemsTable, self)
+        end
     end
 else
     ENT.PopulateEntityInfo = true
@@ -188,14 +270,36 @@ else
         local definition = ix.workshop.stations[model:lower()]
         if not definition then return end
 
+        local nameStr = self:GetDisplayName()
+        if nameStr == "" then nameStr = definition.name end
+
+        local descStr = self:GetDescription()
+        if descStr == "" then descStr = definition.description end
+
         local title = tooltip:AddRow("name")
         title:SetImportant()
-        title:SetText(self:GetDisplayName() or definition.name)
+        title:SetText(L(nameStr))
         title:SetBackgroundColor(Color(255, 196, 0, 150))
         title:SizeToContents()
 
         local description = tooltip:AddRow("description")
-        description:SetText(definition.description)
+        description:SetText(L(descStr))
         description:SizeToContents()
+
+        if self:GetIsWorking() then
+            local timeLeft = math.max(0, math.ceil(self:GetEndTime() - CurTime()))
+            
+            local timerRow = tooltip:AddRow("timer")
+            timerRow:SetText(L("wsTimeLeft", timeLeft))
+            timerRow:SetBackgroundColor(Color(200, 50, 50, 150))
+            timerRow:SizeToContents()
+        end
+
+        if self:GetHasItems() then
+            local endedRow = tooltip:AddRow("ended")
+            endedRow:SetText(L("wsReady"))
+            endedRow:SetBackgroundColor(Color(50, 200, 50))
+            endedRow:SizeToContents()
+        end
     end
 end

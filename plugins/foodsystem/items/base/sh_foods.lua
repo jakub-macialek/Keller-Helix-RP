@@ -7,60 +7,106 @@ ITEM.category = "Consumables"
 
 ITEM.useSound = "npc/barnacle/barnacle_crunch2.wav"
 ITEM.useName = "Consume"
+ITEM.useTime = 3
 
 ITEM.RestoreHunger = 0
 ITEM.RestoreThirst = 0
+ITEM.isDrink = false
+
+ITEM.diseases = nil
+
+-- ITEM.OnConsume = function(item, client, char) ... end
 
 ITEM.functions.Consume = {
     icon = "icon16/user.png",
     name = "Consume",
-    OnRun = function(item)
+    OnCanRun = function(item)
         local client = item.player
-        local char = item.player:GetCharacter()
-        local actiontext = "Invalid Action"
+        if not IsValid(client) then return false end
+        if not client:Alive() then return false end
 
-        if ( client.isEatingConsumeable == true ) then
-            client:Notify("You can't stuff too much food in your mouth, bruh.") -- bruh
+        if IsValid(item.entity) then return false end
+
+        if client.ixConsumeActionEnd and CurTime() < client.ixConsumeActionEnd then
             return false
         end
 
-        if (item.useSound) then
-            if ( string.find(item.useSound, "drink") ) then -- if you have custom sounds for drinking / eating, change this.
-                actiontext = "Drinking .. "
-            else
-                actiontext = "Eating .. "
-            end
+        return true
+    end,
+    OnRun = function(item)
+        local client = item.player
+        local char = client:GetCharacter()
+        if not char then return false end
+
+        if client.ixConsumeActionEnd and CurTime() < client.ixConsumeActionEnd then
+            client:NotifyLocalized("fsFullMouth")
+            return false
         end
 
-        local function EatFunction(client, char)
-            if not ( client:IsValid() and client:Alive() and char ) then return end
-    
-            if ( item.useSound ) then
-                if ( istable(item.useSound) ) then
-                    client:EmitSound(table.Random(item.useSound))
+        local isDrink = item.isDrink or false
+        if not isDrink and isstring(item.useSound) then
+            isDrink = string.find(item.useSound:lower(), "drink") ~= nil
+        end
+
+        local actionText = isDrink and "@fsDrinking" or "@fsEating"
+        local useTime = tonumber(item.useTime) or 0
+
+        local function ConsumeFunction(ply, character)
+            if not IsValid(ply) or not ply:Alive() then return end
+            if not ply:GetCharacter() or ply:GetCharacter():GetID() ~= character:GetID() then return end
+
+            local inv = character:GetInventory()
+            if not inv or not inv:GetItemByID(item.id) then
+                ply:NotifyLocalized("fsItemLost")
+                return
+            end
+
+            if item.useSound then
+                if istable(item.useSound) then
+                    ply:EmitSound(table.Random(item.useSound))
                 else
-                    client:EmitSound(item.useSound)
+                    ply:EmitSound(item.useSound)
                 end
             end
-    
-            if ( item.RestoreHunger > 0 ) then
-                char:SetHunger(math.Clamp(char:GetHunger() + item.RestoreHunger, 0, 100))
+
+            if item.RestoreHunger and item.RestoreHunger > 0 then
+                if character.SetHunger then
+                    character:SetHunger(math.Clamp(character:GetHunger() + item.RestoreHunger, 0, 100))
+                end
             end
 
-            if ( item.RestoreThirst > 0 ) then
-                char:SetThirst(math.Clamp(char:GetThirst() + item.RestoreThirst, 0, 100))
+            if item.RestoreThirst and item.RestoreThirst > 0 then
+                if character.SetThirst then
+                    character:SetThirst(math.Clamp(character:GetThirst() + item.RestoreThirst, 0, 100))
+                end
             end
+
+            if item.diseases and istable(item.diseases) then
+                for diseaseID, chance in pairs(item.diseases) do
+                    if math.random() <= chance then
+                        hook.Run("OnPlayerContractDisease", ply, diseaseID, item)
+                    end
+                end
+            end
+
+            if item.OnConsume then
+                item:OnConsume(ply, character)
+            end
+
+            item:Remove()
         end
 
-        if ( item.useTime ) then
-            client.isEatingConsumeable = true
-            client:SetAction(actiontext, item.useTime, function()
-                EatFunction(client, char)
-
-                client.isEatingConsumeable = false
+        if useTime > 0 then
+            client.ixConsumeActionEnd = CurTime() + useTime
+            
+            client:SetAction(actionText, useTime, function()
+                ConsumeFunction(client, char)
             end)
+
+            return false
         else
-            EatFunction(client, char)
+            ConsumeFunction(client, char)
+            return false
         end
     end
 }

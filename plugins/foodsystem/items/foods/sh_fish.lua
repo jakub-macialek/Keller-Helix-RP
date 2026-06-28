@@ -20,3 +20,5 @@ ITEM.height = 1
 ITEM.useTime = 2
 ITEM.useSound = "LiteNetwork/hl2rp/eat.ogg"
 ITEM.RestoreHunger = 5
+
+-- ITEM.diseases = { ["salmonella"] = 0.25} -- [ID] = chance (0.0 - 1.0)

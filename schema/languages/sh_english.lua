@@ -13,7 +13,23 @@
 LANGUAGE = {
 	wsMissingItem = "You don't have %s.",
 	wsWorking = "Working...",
+	wsBusy = "Workshop is working",
 	wsYouMade = "You made %s.",
 	wsFailed = "Failed to make item.",
-	wsInventoryFull = "Your inventory was full, so %s was spawned on the ground."
+	wsInventoryFull = "Your inventory was full, so %s was spawned on the ground.",
+	wsReady = "Workshop ended it's work",
+	wsTimeLeft = "Time left: %s",
+
+	-- ITEMS
+	-- WORKSHOPS
+	tea_maker = "Tea maker",
+	tea_maker_desc = "A machine that makes tea. It requires water to work.",
+	tea_maker_2 = "Tea maker2",
+	tea_maker_desc_2 = "A machine that makes tea. It requires water to work.2",
+
+	-- FOODSYSTEM
+	fsFullMouth = "Your mouth is full.",
+	fsDrinking = "Drinking...",
+	fsEating = "Eating...",
+	fsItemLost = "Item lost",
 }

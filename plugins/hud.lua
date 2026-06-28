@@ -1,8 +1,8 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Metro HUD"
+PLUGIN.name = "HUD"
 PLUGIN.author = "Keller"
-PLUGIN.description = "Adds a MetroRP HUD."
+PLUGIN.description = "Better HUD created for my server."
 PLUGIN.schema = "Any"
 PLUGIN.license = [[
 Copyright 2026 Keller
