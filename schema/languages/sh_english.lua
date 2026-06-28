@@ -19,6 +19,8 @@ LANGUAGE = {
 	wsInventoryFull = "Your inventory was full, so %s was spawned on the ground.",
 	wsReady = "Workshop ended it's work",
 	wsTimeLeft = "Time left: %s",
+	wsNoTool = "No tool",
+	wsWorking = "Working...",
 
 	-- ITEMS
 	-- WORKSHOPS
@@ -26,6 +28,7 @@ LANGUAGE = {
 	tea_maker_desc = "A machine that makes tea. It requires water to work.",
 	tea_maker_2 = "Tea maker2",
 	tea_maker_desc_2 = "A machine that makes tea. It requires water to work.2",
+	
 
 	-- FOODSYSTEM
 	fsFullMouth = "Your mouth is full.",

@@ -1,48 +1,53 @@
 WorkshopType = {
-	HOLD = 1, -- Hold the use key to work
-	TOGGLE = 2 -- Press the use key once to start working, press it again to stop
+	HOLD = 1,
+	TOGGLE = 2
 }
 
---[[
-ix.workshop.Register(model, 
-	{
-		name = "Workshop name",
-		input = {
-			{"item_name_1", 1}, -- This means it will require 1 of the item. You can add multiple items like this.
-			{"item_name_2", 2},
-		},
-		output = {
-			{"item_name_1", 1},
-			{"item_name_2", 2} -- This means it will give 1 of the item. You can add multiple items like this.
-		},
-		workTime = 30, -- Time in seconds it takes to make the output items
-		description = "Description of the workshop.",
-	}
-)
-]]
-
-ix.workshop.Register("models/props_interiors/vendingmachinesoda01a.mdl", {
+ix.workshop.Register({
 	name = "tea_maker",
+	models = {
+		"models/props_interiors/vendingmachinesoda01a.mdl"
+	},
 	input = {
 		{"water", 1},
 	},
 	output = {
 		{"tea", 2},
 	},
-    workTime = 30,
+	workTime = 30,
 	description = "tea_maker_desc",
-	type = WorkshopType.ACTION,
+	type = WorkshopType.HOLD,
+	workSound = "LiteNetwork/hl2rp/eat.ogg",
 })
 
-ix.workshop.Register("models/props_c17/canister_propane01a.mdl", {
+ix.workshop.Register({
 	name = "tea_maker_2",
+	models = {
+		"models/props_c17/canister_propane01a.mdl"
+	},
 	input = {
 		{"water", 1},
 	},
 	output = {
 		{"tea", 2},
 	},
-    workTime = 30,
+	workTime = 30,
 	description = "tea_maker_2_desc",
 	type = WorkshopType.TOGGLE,
+})
+
+ix.workshop.Register({
+	name = "tree",
+	models = {
+		"models/props_foliage/tree_slice01.mdl",
+		"models/props_foliage/tree_slice02.mdl"
+	},
+	output = {
+		{"wood", 1}
+	},
+	workTime = 40,
+	description = "chop_tree_desc",
+	type = WorkshopType.HOLD,
+	tools = {"axe"},
+	workSound = "physics/wood/wood_box_scrape_rough_loop1.wav"
 })

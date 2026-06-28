@@ -38,6 +38,35 @@ function PLUGIN:CharacterLoaded(char)
         client.ixHungerTick = CurTime() + timeLeft
         client.ixThirstTick = CurTime() + thirstTimeLeft
     end
+
+    if not ix.bar or not ix.bar.Add then return end
+        ix.bar.Add(function()
+            local ply = LocalPlayer()
+            local char = ply:GetCharacter()
+
+            if not char then return end
+
+            local hunger = math.Clamp(char:GetHunger() or char:GetData("hunger", 0), 0, 100)
+
+            return hunger / 100
+        end, 
+        Color(255, 165, 0), 
+        4, 
+        "hunger")
+
+        ix.bar.Add(function()
+            local ply = LocalPlayer()
+            local char = ply:GetCharacter()
+
+            if not char then return end
+
+            local thirst = math.Clamp(char:GetThirst() or char:GetData("thirst", 0), 0, 100)
+
+            return thirst / 100
+        end, 
+        Color(0, 165, 255), 
+        4, 
+        "thirst")
 end
 
 local factionIgnore = {

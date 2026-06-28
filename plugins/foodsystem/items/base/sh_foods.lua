@@ -55,8 +55,22 @@ ITEM.functions.Consume = {
             if not IsValid(ply) or not ply:Alive() then return end
             if not ply:GetCharacter() or ply:GetCharacter():GetID() ~= character:GetID() then return end
 
-            local inv = character:GetInventory()
-            if not inv or not inv:GetItemByID(item.id) then
+            -- Pobieramy ekwipunek, w którym aktualnie znajduje się przedmiot
+            local currentInv = ix.item.inventories[item.invID]
+            local hasAccess = false
+
+            -- Sprawdzamy, czy ekwipunek istnieje oraz czy gracz ma do niego dostęp (np. otwarty kontener lub własne EQ)
+            if currentInv and currentInv:GetItemByID(item.id) then
+                if currentInv:OnCheckAccess(ply) then
+                    hasAccess = true
+                -- Dodatkowe zabezpieczenie na wypadek specyficznych konfiguracji toreb
+                elseif item:GetOwner() == ply then
+                    hasAccess = true
+                end
+            end
+
+            -- Jeśli przedmiot został usunięty, zamknięto kontener lub wyrzucono torbę
+            if not hasAccess then
                 ply:NotifyLocalized("fsItemLost")
                 return
             end

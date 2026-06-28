@@ -1,14 +1,20 @@
-v0.4.4
+v0.4.4a
 
 Added:
-1. Toggle type workshops
-2. New translations
-3. Translation support for workshop names and descriptions
-4. Language support for the foodsystem
-5. Disease support in the foodsystem
+1. Work sounds to workshops
+2. Tools to workshops
+3. Way to use more models as one workshop
 
 Changed:
-1. Renamed `metrohud.lua` to `hud.lua`
+1. Moved HUD bars to foodsystem `sv_hook.lua`
+2. Names in schema
+
+Removed:
+1. File `hud.lua`
+2. All factions except citizen
+3. All weapons
+4. All ammo
+5. All classes
 
 Fixed:
-1. Various bugs in the foodsystem
+1. Bug in foodsystem where players couldn't eat from containers

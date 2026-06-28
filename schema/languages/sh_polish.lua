@@ -7,6 +7,8 @@ LANGUAGE = {
 	wsInventoryFull = "Twoja ekwipunek był pełny, więc %s został wygenerowany na ziemi.",
 	wsReady = "Warsztat skończył pracę.",
 	wsTimeLeft = "Pozostało %s sekund",
+	wsNoTool = "Brak narzędzia",
+	wsWorking = "Pracujesz...",
 
 	-- ITEMS
 	-- WORKSHOPS

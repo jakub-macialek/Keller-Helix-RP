@@ -1,16 +1,8 @@
--- sh_init.lua / cl_init.lua / sv_init.lua (W zależności od struktury, poniżej podział na SERVER i CLIENT)
-
 ENT.Type = "anim"
 ENT.PrintName = "Workshop"
 ENT.Category = "Helix"
 ENT.Spawnable = false
 ENT.bNoPersist = true
-
--- Konfiguracja domyślnych typów, jeśli nie są zdefiniowane globalnie
-WorkshopType = WorkshopType or {
-    ACTION = 1,
-    TOGGLE = 2
-}
 
 function ENT:SetupDataTables()
     self:NetworkVar("String", 0, "DisplayName")
@@ -29,6 +21,11 @@ if SERVER then
                 self:SetIsWorking(false)
                 self:SetEndTime(0)
                 self:SetHasItems(true)
+
+                if self.workSoundPatch then
+                    self.workSoundPatch:Stop()
+                    self.workSoundPatch = nil
+                end
             end
         end
 
@@ -36,8 +33,16 @@ if SERVER then
         return true
     end
 
+    function ENT:OnRemove()
+        if self.workSoundPatch then
+            self.workSoundPatch:Stop()
+            self.workSoundPatch = nil
+        end
+    end
+
     local function CheckInventoryForItems(inv, items, client)
         if not inv then return false end
+        if not items or #items == 0 then return true end
 
         local missingItems = {}
         
@@ -68,6 +73,7 @@ if SERVER then
 
     local function RemoveItemsFromInventory(inv, items)
         if not inv then return false end
+        if not items or #items == 0 then return true end
 
         for _, item in ipairs(items) do
             local itemID = item[1]
@@ -140,7 +146,21 @@ if SERVER then
     local function StartActionWork(client, time, inputItemsTable, outputItemsTable, workshop)
         if not IsValid(client) then return end
 
-        client:SetAction("Working...", time)
+        local model = workshop:GetModel()
+        local definition = model and ix.workshop.stations[model:lower()]
+
+        if definition and definition.workSound then
+            local soundPath = definition.workSound
+            local finalSound = istable(soundPath) and table.Random(soundPath) or soundPath
+            if finalSound and finalSound ~= "" then
+                workshop.workSoundPatch = CreateSound(workshop, finalSound)
+                if workshop.workSoundPatch then
+                    workshop.workSoundPatch:Play()
+                end
+            end
+        end
+
+        client:SetAction("@wsWorking", time)
         client:DoStaredAction(workshop, function()
             local char = client:GetCharacter()
             if not char then return end
@@ -167,10 +187,20 @@ if SERVER then
                 client:NotifyLocalized("wsInventoryFull", failedItemName or "items")
             end
 
+            if workshop.workSoundPatch then
+                workshop.workSoundPatch:Stop()
+                workshop.workSoundPatch = nil
+            end
+
             client:SetAction()
         end, 
         time,
         function()
+            if workshop.workSoundPatch then
+                workshop.workSoundPatch:Stop()
+                workshop.workSoundPatch = nil
+            end
+
             client:SetAction()
             for _, outputItem in ipairs(outputItemsTable) do
                 local itemTable = ix.item.Get(outputItem[1])
@@ -182,8 +212,6 @@ if SERVER then
 
     local function StartToggleWork(client, time, inputItemsTable, outputItemsTable, workshop)
         if not IsValid(client) or not client:IsPlayer() then return end
-        if not inputItemsTable then return end
-        if not outputItemsTable then return end
         if not workshop then return end
 
         local char = client:GetCharacter()
@@ -196,6 +224,19 @@ if SERVER then
         if not RemoveItemsFromInventory(inv, inputItemsTable) then return end
 
         local endTime = CurTime() + time
+
+        local model = workshop:GetModel()
+        local definition = model and ix.workshop.stations[model:lower()]
+        if definition and definition.workSound then
+            local soundPath = definition.workSound
+            local finalSound = istable(soundPath) and table.Random(soundPath) or soundPath
+            if finalSound and finalSound ~= "" then
+                workshop.workSoundPatch = CreateSound(workshop, finalSound)
+                if workshop.workSoundPatch then
+                    workshop.workSoundPatch:Play()
+                end
+            end
+        end
 
         workshop:SetHasItems(false)
         workshop:SetEndTime(endTime)
@@ -247,17 +288,29 @@ if SERVER then
             return
         end
 
-        local inputItemsTable = definition.input
-        if not inputItemsTable then return end
+        if definition.tools then
+            for _, toolID in ipairs(definition.tools) do
+                if not inv:HasItem(toolID) then
+                    local itemTable = ix.item.Get(toolID)
+                    local toolName = itemTable and (itemTable.name or toolID) or toolID
+                    client:NotifyLocalized("wsNoTool", toolName)
+                    return
+                end
+            end
+        end
 
-        if not CheckInventoryForItems(inv, inputItemsTable, client) then return end
+        local inputItemsTable = definition.input or {}
+        if #inputItemsTable > 0 then
+            if not CheckInventoryForItems(inv, inputItemsTable, client) then return end
+        end
 
         local time = definition.workTime or ix.config.Get("workshopDefaultWorkTime", 30)
+        local wType = definition.type or WorkshopType.ACTION
 
-        if definition.type == WorkshopType.ACTION then
+        if wType == WorkshopType.ACTION or wType == WorkshopType.HOLD then
             StartActionWork(client, time, inputItemsTable, outputItemsTable, self)
-        elseif definition.type == WorkshopType.TOGGLE then
-           StartToggleWork(client, time, inputItemsTable, outputItemsTable, self)
+        elseif wType == WorkshopType.TOGGLE then
+            StartToggleWork(client, time, inputItemsTable, outputItemsTable, self)
         end
     end
 else

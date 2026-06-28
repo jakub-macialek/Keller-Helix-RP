@@ -1,4 +1,0 @@
-ITEM.name = "Polis Passport"
-ITEM.description = "A passport issued by the Polis faction, granting the holder access to certain areas and privileges within Polis-controlled territories. The passport is a symbol of membership and loyalty to the Polis faction, and it may be required for various activities such as trading, employment, or travel within Polis-controlled areas. The passport may also contain information about the holder, such as their name, rank, and any special permissions or restrictions they may have within the faction."
-ITEM.model = Model("models/anubiques/passport_metro/passport_polis.mdl")
-ITEM.base = "base_passports"

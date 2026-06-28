@@ -1,9 +1,0 @@
-ITEM.name = "Guitar"
-ITEM.model = Model("models/custom/guitar/m_d_45.mdl")
-ITEM.class = "guitar_stalker"
-ITEM.description = "A guitar, a musical instrument that can be used to play music and entertain others. It is a common item found in the metro, often used by survivors to pass the time and boost morale. The guitar can be played by strumming the strings or using a pick, and it can produce a wide range of sounds and melodies. It is a valuable item for those who enjoy music and want to bring some joy to their lives in the harsh conditions of the metro."
-ITEM.category = "Tools"
-ITEM.weaponCategory = "tool"
-ITEM.width = 2
-ITEM.height = 3
-ITEM.noBusiness = false

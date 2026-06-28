@@ -1,4 +1,0 @@
-ITEM.name = "Hanza Passport"
-ITEM.description = "A passport issued by the Hanza faction, granting the holder access to certain areas and privileges within Hanza-controlled territories. The passport is a symbol of membership and loyalty to the Hanza faction, and it may be required for various activities such as trading, employment, or travel within Hanza-controlled areas. The passport may also contain information about the holder, such as their name, rank, and any special permissions or restrictions they may have within the faction."
-ITEM.model = Model("models/anubiques/passport_metro/passport_hansa.mdl")
-ITEM.base = "base_passports"
