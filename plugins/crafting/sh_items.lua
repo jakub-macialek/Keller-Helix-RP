@@ -235,7 +235,7 @@ for k, v in pairs(ITEMS) do
 	ITEM.name = v.name
 	ITEM.model = v.model
 	ITEM.description = v.description
-	ITEM.category = "Crafting"
+	ITEM.category = CRAFTING_DEFAULT_CATEGORY
 	ITEM.width = v.width or 1
 	ITEM.height = v.height or 1
 	ITEM.chance = v.chance or 0

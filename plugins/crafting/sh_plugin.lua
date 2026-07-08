@@ -44,15 +44,16 @@ TODO: For release, demonstrate full capacity of plugin.
 ---------------------------------------------------------------------------]]
 local NEW_RECIPES = {
 	["metal_downgrade_reclaimed"] = {
-		["name"] = "Breakdown: Reclaimed Metal",
+		["name"] = "Reclaimed Metal",
 		["model"] = "models/props_c17/oildrumchunk01d.mdl",
 		["desc"] = "Break down Reclaimed Metal into Scrap Metal.",
 		["requirements"] = {["reclaimed_metal"] = 1, ["scrap_hammer"] = 1},
 		["results"] = {["scrap_metal"] = 2},
-		["category"] = "Metal Breakdown"
+		["category"] = "Metal Breakdown",
+		["skill"] = {["guns"] = 1}
 	},
 	["metal_downgrade_refined"] = {
-		["name"] = "Breakdown: Refined Metal",
+		["name"] = "Refined Metal",
 		["model"] = "models/props_c17/canisterchunk02a.mdl",
 		["desc"] = "Break down Refined Metal into Reclaimed Metal.",
 		["requirements"] = {["refined_metal"] = 1, ["scrap_hammer"] = 1},
@@ -60,7 +61,7 @@ local NEW_RECIPES = {
 		["category"] = "Metal Breakdown",
 	},
 	["metal_upgrade_reclaimed"] = {
-		["name"] = "Metal: Reclaimed Metal",
+		["name"] = "Reclaimed Metal",
 		["model"] = "models/props_c17/oildrumchunk01d.mdl",
 		["desc"] = "Break down Refined Metal into Reclaimed Metal.",
 		["requirements"] = {["scrap_metal"] = 3},
