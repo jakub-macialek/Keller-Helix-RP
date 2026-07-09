@@ -1,4 +1,3 @@
-
 ENT.Type = "anim"
 ENT.PrintName = "Container"
 ENT.Category = "Helix"

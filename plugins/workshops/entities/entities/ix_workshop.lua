@@ -26,6 +26,8 @@ if SERVER then
                     self.workSoundPatch:Stop()
                     self.workSoundPatch = nil
                 end
+
+                hook.Run("WorkshopStateChanged", self)
             end
         end
 
@@ -38,6 +40,8 @@ if SERVER then
             self.workSoundPatch:Stop()
             self.workSoundPatch = nil
         end
+
+        hook.Run("WorkshopRemoved", self)
     end
 
     local function CheckInventoryForItems(inv, items, client)
@@ -101,18 +105,18 @@ if SERVER then
 
         for _, outputItem in ipairs(items) do
             local itemID = outputItem[1]
-            local quantity = outputItem[2]
+            local quantity = outputItem[2] or 1
             local itemTable = ix.item.Get(itemID)
 
             if not itemTable then continue end
 
-            local result, err = inv:Add(itemTable.uniqueID, quantity)
-            if not result then
-                success = false
-                lastFailedName = itemTable.name or itemID
-                
-                if spawnPos then
-                    for i = 1, quantity do
+            for i = 1, quantity do
+                local result, err = inv:Add(itemTable.uniqueID)
+                if not result then
+                    success = false
+                    lastFailedName = itemTable.name or itemID
+                    
+                    if spawnPos then
                         ix.item.Spawn(itemTable.uniqueID, spawnPos, nil, Angle(0, 0, 0), nil)
                     end
                 end
@@ -143,7 +147,7 @@ if SERVER then
         end
     end
 
-    local function StartActionWork(client, time, inputItemsTable, outputItemsTable, workshop)
+    local function StartHoldWork(client, time, inputItemsTable, outputItemsTable, workshop)
         if not IsValid(client) then return end
 
         local model = workshop:GetModel()
@@ -153,7 +157,8 @@ if SERVER then
             local soundPath = definition.workSound
             local finalSound = istable(soundPath) and table.Random(soundPath) or soundPath
             if finalSound and finalSound ~= "" then
-                workshop.workSoundPatch = CreateSound(workshop, finalSound)
+                local resolvedPath = ix.workshop.GetSoundPath(finalSound)
+                workshop.workSoundPatch = CreateSound(workshop, resolvedPath)
                 if workshop.workSoundPatch then
                     workshop.workSoundPatch:Play()
                 end
@@ -231,7 +236,8 @@ if SERVER then
             local soundPath = definition.workSound
             local finalSound = istable(soundPath) and table.Random(soundPath) or soundPath
             if finalSound and finalSound ~= "" then
-                workshop.workSoundPatch = CreateSound(workshop, finalSound)
+                local resolvedPath = ix.workshop.GetSoundPath(finalSound)
+                workshop.workSoundPatch = CreateSound(workshop, resolvedPath)
                 if workshop.workSoundPatch then
                     workshop.workSoundPatch:Play()
                 end
@@ -241,6 +247,8 @@ if SERVER then
         workshop:SetHasItems(false)
         workshop:SetEndTime(endTime)
         workshop:SetIsWorking(true)
+        
+        hook.Run("WorkshopStateChanged", workshop)
     end
 
     function ENT:Use(client)
@@ -281,6 +289,8 @@ if SERVER then
                 client:NotifyLocalized("wsYouMade", outputString)
                 self:SetHasItems(false)
                 self:SetDescription(definition.description or "")
+                
+                hook.Run("WorkshopStateChanged", self)
             else
                 client:NotifyLocalized("wsInventoryFull", failedItemName or "items")
             end
@@ -305,10 +315,10 @@ if SERVER then
         end
 
         local time = definition.workTime or ix.config.Get("workshopDefaultWorkTime", 30)
-        local wType = definition.type or WorkshopType.ACTION
+        local wType = definition.type or WorkshopType.HOLD
 
-        if wType == WorkshopType.ACTION or wType == WorkshopType.HOLD then
-            StartActionWork(client, time, inputItemsTable, outputItemsTable, self)
+        if wType == WorkshopType.HOLD then
+            StartHoldWork(client, time, inputItemsTable, outputItemsTable, self)
         elseif wType == WorkshopType.TOGGLE then
             StartToggleWork(client, time, inputItemsTable, outputItemsTable, self)
         end

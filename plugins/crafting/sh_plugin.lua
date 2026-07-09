@@ -4,6 +4,8 @@ PLUGIN.author = "ZeMysticalTaco"
 PLUGIN.desc = "Replacing the business menu with crafting because that's a more sensible thing to do."
 STORED_RECIPES = {}
 
+ix.util.Include("sh_categories.lua")
+
 function PLUGIN:AddRecipe(name, model, desc, requirements, results, id, skill, blueprint, guns, entity, category)
 	if type(name) ~= "table" then
 		local RECIPE = {}
